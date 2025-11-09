@@ -1,7 +1,6 @@
 const api = new Api(CONFIG_API_URLS);
 console.log(api);
 
-// 6️⃣ Variáveis de controle do jogo
 const tabuleiro = document.getElementById("tabuleiro");
 const jogadasRestantesElemento = document.getElementById("jogadasRestantes");
 
@@ -9,13 +8,11 @@ jogadasRestantesElemento.textContent = `Tentativas Restantes: ${jogo.tentativasR
 
 const derrotas = document.getElementById("numeroDerrotas");
 const vitorias = document.getElementById("numeroVitorias");
-/* ======= Carregar Personagens ======= */
 async function carregarPersonagens() {
     tabuleiro.innerHTML = "";
     const cartaDBZ = new CartaDragonBall(api);
     const cartasBase = await cartaDBZ.buscarImagens(jogo.totalCartas);
 
-    // duplica e embaralha
     const cartas = [...cartasBase, ...cartasBase].sort(() => Math.random() - 0.5);
 
     cartas.forEach(personagem => {
@@ -24,7 +21,6 @@ async function carregarPersonagens() {
     });
 }
 
-/* ======= Cria carta ======= */
 function criarCarta(personagem) {
     const carta = document.createElement("div");
     carta.classList.add("carta");
@@ -50,7 +46,6 @@ function criarCarta(personagem) {
     return carta;
 }
 
-/* ======= Virar carta ======= */
 function virarCarta(carta) {
     if (jogo.bloqueado || carta.classList.contains("virada")) return;
 
@@ -64,7 +59,6 @@ function virarCarta(carta) {
     }
 }
 
-/* ======= Verificar par ======= */
 function verificarPar() {
     jogo.bloqueado = true;
     const id1 = comparacao.carta1.dataset.id;
@@ -114,12 +108,11 @@ function resetarObjeto() {
     jogo.totalCartas = 10;
     jogadasRestantesElemento.textContent = `Tentativas Restantes: ${jogo.tentativasRestantes}`;
 }
-/* ======= Resetar ======= */
+
 function resetarSelecao() {
     comparacao.carta1 = null;
     comparacao.carta2 = null;
     jogo.bloqueado = false;
 }
 
-/* ======= Iniciar jogo ======= */
 carregarPersonagens();

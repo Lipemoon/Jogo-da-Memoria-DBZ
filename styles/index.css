@@ -1,4 +1,3 @@
-/* ===== Estilos Gerais ===== */
 body {
     font-family: 'Poppins', sans-serif;
     background: radial-gradient(circle at center, #ff9933, #ff6600, #cc3300);
@@ -11,7 +10,6 @@ body {
     justify-content: center;
 }
 
-/* ===== Container Principal ===== */
 .container {
     background: rgba(0, 0, 0, 0.8);
     padding: 30px;
@@ -22,7 +20,6 @@ body {
     max-width: 95%;
 }
 
-/* ===== Títulos ===== */
 h1 {
     font-size: 2.5em;
     margin-bottom: 15px;
@@ -36,21 +33,19 @@ h2 {
     font-weight: 400;
 }
 
-/* ===== Tabuleiro ===== */
 #tabuleiro {
     display: grid;
-    grid-template-columns: repeat(5, 1fr); /* 🔥 5 cartas por linha */
-    grid-template-rows: repeat(4, auto);  /* 🔥 4 linhas fixas */
+    grid-template-columns: repeat(5, 1fr); 
+    grid-template-rows: repeat(4, auto);  
     gap: 20px;
     justify-items: center;
     align-items: center;
     margin-top: 25px;
 }
 
-/* ===== Cartas ===== */
 .carta {
-    width: 150px;   /* 🔧 Ajuste ideal para 5 por linha */
-    height: 200px;  /* 🔧 Proporção retangular tipo carta */
+    width: 150px; 
+    height: 200px; 
     background-color: #222;
     border-radius: 10px;
     box-shadow: 0 4px 10px rgba(255, 153, 0, 0.5);
@@ -58,14 +53,13 @@ h2 {
     position: relative;
     perspective: 800px;
     transition: transform 0.3s ease;
-    overflow: hidden; /* 🔥 Garante que a imagem não saia da carta */
+    overflow: hidden; 
 }
 
 .carta:hover {
     transform: scale(1.05);
 }
 
-/* ===== Efeito de Virar ===== */
 .carta-inner {
     position: relative;
     width: 100%;
@@ -78,7 +72,6 @@ h2 {
     transform: rotateY(180deg);
 }
 
-/* ===== Faces das Cartas ===== */
 .carta-front,
 .carta-back {
     position: absolute;
@@ -89,15 +82,14 @@ h2 {
     overflow: hidden;
 }
 
-/* Frente (imagem do personagem) */
+
 .carta-front {
-    background-size: contain;      /* 🔥 imagem inteira visível */
-    background-repeat: no-repeat;  /* 🔥 evita repetição */
-    background-position: center;   /* 🔥 centraliza imagem */
+    background-size: contain;     
+    background-repeat: no-repeat;  
+    background-position: center;   
     transform: rotateY(180deg);
 }
 
-/* Verso (lado fechado) */
 .carta-back {
     background: linear-gradient(145deg, #ffcc00, #ff6600);
     display: flex;
@@ -109,7 +101,6 @@ h2 {
     box-shadow: inset 0 0 15px rgba(255, 255, 255, 0.3);
 }
 
-/* ===== Animação de Acerto ===== */
 @keyframes acerto {
     0% { transform: scale(1); }
     50% { transform: scale(1.15); }
