@@ -8,30 +8,37 @@ class CartaBase {
     constructor(apiUrl) {
         this.apiUrl = apiUrl;
     }
-    async buscarImagens(qtd = 10) {
+    /* Explicação da Promise:
+    Primeiro .then(res => res.json())
+    Depois que o fetch responde, você recebe um objeto Response.
+    res.json() converte em json
+
+    Segundo .then(dados => resolve(...))
+    Aqui, você recebeu os dados da API.
+    então como deu certo, chama o resolve no metodo transformarEmCartas
+    
+    .catch() serve para capturar algum erro que deu durante a chamada da api entao
+    chama o reject.
+    */
+    buscarPersonagens(qtd) {
+        return new Promise((resolve, reject) => {
+            fetch(this.apiUrl)
+                .then(res => res.json())
+                .then(dados => resolve(this.transformarEmCartas(dados, qtd)))
+                .catch(erro => reject(erro));
+        });
+    }
+    /* Podia ser feito desse jeito 
+    async buscarPersonagens(qtd) {
         try {
-            const resposta = await fetch(this.apiUrl);
-            if (!resposta.ok) {
-                throw new Error("Erro na resposta da API");
-            } 
-            const dados = await resposta.json();
-
+            const res = await fetch(this.apiUrl);
+            const dados = await res.json();
             return this.transformarEmCartas(dados, qtd);
-            } catch (erro) {
-                console.error("Erro ao buscar imagens:", erro);
-                return [];
-            }
-        }
-        transformarEmCartas(dados, qtd) {
-            const cartas = [];
-
-            for (let i = 0; i < qtd; i++) {
-                const carta = new Carta(dados.id[i], dados.name[i], dados.image[i]);
-                cartas.push(carta);
-            }
-
-            return cartas;
-        }
+        } catch (erro) {
+            throw erro;
+        } 
+    }
+    */
 }
 
 class CartaDragonBall extends CartaBase {
@@ -39,13 +46,20 @@ class CartaDragonBall extends CartaBase {
         const url = api.endpoints[Math.floor(Math.random() * api.endpoints.length)];
         super(url);
     }
-
+    /*
+    “Mesmo que o método buscarPersonagens esteja definido na classe base, como eu crio uma instância da classe filha, 
+    o this sempre aponta para a classe filha. Por isso, quando buscarPersonagens chama this.transformarEmCartas, 
+    a versão sobrescrita da classe filha é que é executada. Isso demonstra polimorfismo: 
+    a mesma função da classe base se comporta diferente dependendo da classe filha que a chama.”
+    */
     transformarEmCartas(dados) {
-        return dados.items.map(personagem => ({
-            id: personagem.id,
-            nome: personagem.name,
-            imagem: personagem.image
-        }));
+        return dados.items.map(carta => 
+            new Carta(
+                carta.id,
+                carta.name,
+                carta.image
+            )
+        );
     }
 }
 

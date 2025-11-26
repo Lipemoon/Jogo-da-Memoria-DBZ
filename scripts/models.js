@@ -1,3 +1,4 @@
+// Funções Construtoras
 function Carta(id, nome, imagem) {
     this.id = id;
     this.nome = nome;
@@ -7,4 +8,3 @@ function Carta(id, nome, imagem) {
 function Api(urls) {
     this.endpoints = urls;
 }
-

@@ -1,5 +1,4 @@
 const api = new Api(CONFIG_API_URLS);
-console.log(api);
 
 const tabuleiro = document.getElementById("tabuleiro");
 const jogadasRestantesElemento = document.getElementById("jogadasRestantes");
@@ -8,23 +7,38 @@ jogadasRestantesElemento.textContent = `Tentativas Restantes: ${jogo.tentativasR
 
 const derrotas = document.getElementById("numeroDerrotas");
 const vitorias = document.getElementById("numeroVitorias");
-async function carregarPersonagens() {
+/* Explicação se async/await
+O async faz a função automaticamente virar uma Promise e voce não precisa usar new Promise().
+o await pausa a execução dentro da função até o fetch resolver.
+o return já vira um resolve().
+o throw já vira um reject().
+*/
+async function carregarJogo() {
     tabuleiro.innerHTML = "";
-    const cartaDBZ = new CartaDragonBall(api);
-    const cartasBase = await cartaDBZ.buscarImagens(jogo.totalCartas);
-
-    const cartas = [...cartasBase, ...cartasBase].sort(() => Math.random() - 0.5);
-
-    cartas.forEach(personagem => {
-        const carta = criarCarta(personagem);
-        tabuleiro.appendChild(carta);
-    });
+    try {
+        const cartaDBZ = new CartaDragonBall(api);
+        const cartasBase = await cartaDBZ.buscarPersonagens(jogo.totalCartas);
+        // isso [...cartasBase, ...cartasBase] duplica o array de cartas, os 3 pontos se chama spread e ele espalha um array dentro de outro
+        const cartas = [...cartasBase, ...cartasBase]
+        /*Math.random() gera um número entre 0 e 1 e subtrair 0.5 gera números positivos ou negativos.
+        O método .sort() usa esse valor para decidir se troca ou não a posição entre dois elementos.
+        se for positivo ele troca, se for negativo não troca a carta de lugar
+        */
+        cartas.sort(() => Math.random() - 0.5);
+        
+        cartas.forEach(personagem => {
+            const carta = criarCarta(personagem);
+            tabuleiro.appendChild(carta);
+        });
+    } catch (erro) {
+        console.error("Erro ao carregar personagens:", erro);
+    }
 }
 
 function criarCarta(personagem) {
     const carta = document.createElement("div");
     carta.classList.add("carta");
-    carta.dataset.id = personagem.id;
+    carta.id = personagem.id;
 
     const cartaInner = document.createElement("div");
     cartaInner.classList.add("carta-inner");
@@ -47,7 +61,9 @@ function criarCarta(personagem) {
 }
 
 function virarCarta(carta) {
-    if (jogo.bloqueado || carta.classList.contains("virada")) return;
+    if (jogo.bloqueado || carta.classList.contains("virada")) {
+        return;
+    } 
 
     carta.classList.add("virada");
 
@@ -61,20 +77,18 @@ function virarCarta(carta) {
 
 function verificarPar() {
     jogo.bloqueado = true;
-    const id1 = comparacao.carta1.dataset.id;
-    const id2 = comparacao.carta2.dataset.id;
 
-    if (id1 === id2) {
+    if (comparacao.carta1.id === comparacao.carta2.id) {
         comparacao.carta1.classList.add("acertou");
         comparacao.carta2.classList.add("acertou");
         jogo.totalCartas--;
-        resetarSelecao();
+        resetarObjetoComparacao();
     } else {
         jogo.tentativasRestantes--;
         setTimeout(() => {  
             comparacao.carta1.classList.remove("virada");
             comparacao.carta2.classList.remove("virada");
-            resetarSelecao();
+            resetarObjetoComparacao();
         }, 1000);
     }
 
@@ -85,9 +99,9 @@ function verificarPar() {
             setTimeout(() => 
                 alert("🎉 Parabéns! Você venceu o jogo!"), 
                 jogo.vitorias++,
-                resetarObjeto(),
                 vitorias.textContent = `Numero de Vitórias: ${jogo.vitorias}`,
-                carregarPersonagens(),
+                resetarObjetoJogo(),
+                carregarJogo(),
             500),
         500)
     } else if (jogo.tentativasRestantes < 1) {
@@ -95,24 +109,24 @@ function verificarPar() {
             setTimeout(() => 
                 alert("💀 Fim de jogo! Você perdeu."), 
                 jogo.derrotas++,
-                resetarObjeto(),
                 derrotas.textContent = `Numero de Derrotas: ${jogo.derrotas}`,
-                carregarPersonagens(),
+                resetarObjetoJogo(),
+                carregarJogo(),
             500),
         500)
     }
 }
 
-function resetarObjeto() {
+function resetarObjetoJogo() {
     jogo.tentativasRestantes = 10;
     jogo.totalCartas = 10;
     jogadasRestantesElemento.textContent = `Tentativas Restantes: ${jogo.tentativasRestantes}`;
 }
 
-function resetarSelecao() {
+function resetarObjetoComparacao() {
     comparacao.carta1 = null;
     comparacao.carta2 = null;
     jogo.bloqueado = false;
 }
 
-carregarPersonagens();
+carregarJogo();

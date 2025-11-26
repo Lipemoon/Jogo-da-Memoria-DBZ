@@ -1,3 +1,4 @@
+// Objetos Literais
 const jogo = {
     tentativasRestantes: 10,
     vitorias: 0,
