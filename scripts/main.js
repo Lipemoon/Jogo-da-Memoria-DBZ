@@ -1,3 +1,9 @@
+const CONFIG_API_URLS = [
+    "https://dragonball-api.com/api/characters",
+  "https://dragonball-api.com/api/characters?page=2&limit=10",
+  "https://dragonball-api.com/api/characters?page=4&limit=10",
+]
+
 const api = new Api(CONFIG_API_URLS);
 
 const tabuleiro = document.getElementById("tabuleiro");
@@ -7,23 +13,14 @@ jogadasRestantesElemento.textContent = `Tentativas Restantes: ${jogo.tentativasR
 
 const derrotas = document.getElementById("numeroDerrotas");
 const vitorias = document.getElementById("numeroVitorias");
-/* Explicação se async/await
-O async faz a função automaticamente virar uma Promise e voce não precisa usar new Promise().
-o await pausa a execução dentro da função até o fetch resolver.
-o return já vira um resolve().
-o throw já vira um reject().
-*/
 async function carregarJogo() {
     tabuleiro.innerHTML = "";
     try {
         const cartaDBZ = new CartaDragonBall(api);
         const cartasBase = await cartaDBZ.buscarPersonagens(jogo.totalCartas);
-        // isso [...cartasBase, ...cartasBase] duplica o array de cartas, os 3 pontos se chama spread e ele espalha um array dentro de outro
+
         const cartas = [...cartasBase, ...cartasBase]
-        /*Math.random() gera um número entre 0 e 1 e subtrair 0.5 gera números positivos ou negativos.
-        O método .sort() usa esse valor para decidir se troca ou não a posição entre dois elementos.
-        se for positivo ele troca, se for negativo não troca a carta de lugar
-        */
+        
         cartas.sort(() => Math.random() - 0.5);
         
         cartas.forEach(personagem => {
